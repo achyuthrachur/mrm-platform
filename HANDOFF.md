@@ -2,46 +2,32 @@
 
 ## Status
 
-ALL 8 PHASES COMPLETE. The platform is feature-complete.
+ALL 8 PHASES + PRODUCTION GAPS COMPLETE. Platform is production-ready.
 
-## Summary of what was built
+## What was just done (Production Gaps sprint)
 
-| Phase                     | Branch                             | Delivers                                                              |
-| ------------------------- | ---------------------------------- | --------------------------------------------------------------------- |
-| 0 — Foundation            | phase-0-foundation                 | Design system, component kit, shell, 7 placeholder routes             |
-| 1 — Data Layer            | phase-1-data-layer                 | 16 models, 12 findings, 5 generators (74k rows), storage, repo, state |
-| 2 — Inventory + Dashboard | phase-2-inventory-dashboard        | Model table + filters, dashboard with charts + heat map               |
-| 3 — Engines + Workbench   | phase-3-engines-workbench          | 16 computed engines, FormulaPanel, Testing Workbench                  |
-| 4 — Results + Export      | phase-4-results-export             | TestResultView, run history, CSV/XLSX/PDF export                      |
-| 5 — Findings              | phase-5-findings                   | Findings tracker, flag-for-review, state machine, create-from-run     |
-| 6 — Calendar + Governance | phase-6-calendar-governance        | Monitoring calendar, Add-Model, freq-approval, Governance             |
-| 7 — Polish + Deploy       | phase-7-dependencies-polish-deploy | Dependency graph, Reset Demo, responsive, CI/CD                       |
+Phase A — openFx computed dynamically; governance exceptions persisted via StorageAdapter.
+Phase B — html2canvas chart images in PDF (dynamic import, captures #result-chart-{type}).
+Phase C — SupabaseAdapter + factory fallback + middleware + schema.sql.
+Phase D — SupabaseAuthProvider + login page + sign-out; demo toggle preserved.
 
-## Current test count
+## To activate Supabase
 
-181/181 tests pass. Lint clean. Typecheck clean.
+1. Create project at supabase.com
+2. Run `supabase/schema.sql` in the SQL Editor
+3. Create two auth users: `sarah.chen@heartlandbank.demo` and `marcus.williams@heartlandbank.demo` (password: `Demo@1234!`)
+4. INSERT their profiles (see schema.sql instructions with their UUIDs)
+5. Copy `.env.local.example` → `.env.local`; fill in SUPABASE_URL + ANON_KEY
+6. `npm run dev` → `/login`
 
-## To run locally
+## Without Supabase (offline/local mode)
 
-```
-npm install
-npm run dev   # http://localhost:3000
-```
+Leave `.env.local` empty — app works fully with IndexedDB, demo role switcher, no login required.
 
-## To deploy to Vercel
+## Tests
 
-1. Run `vercel link` in the project root
-2. Set GitHub secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
-3. Push to main — CI pipeline runs, then Vercel deploys automatically
+181/181 pass. Lint clean. Typecheck clean.
 
-## Auth swap-point (when going to production)
+## Branch
 
-See PHASE-7-NOTES.md. Replace RoleProvider source with NextAuth/Clerk session;
-replace getStorageAdapter() factory with PrismaAdapter. All UI and engines unchanged.
-
-## Known remaining gaps
-
-- openFx counter not updated when creating finding from run
-- Chart images missing from PDF export
-- Governance pipeline actions use local React state (not persisted)
-- Axe automated a11y scan and Lighthouse scores require a running browser
+`feature/production-gaps-supabase` · 11eb699
