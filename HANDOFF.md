@@ -2,47 +2,59 @@
 
 ## Status
 
-Phase 5 complete. Ready for Phase 6.
+Phase 6 complete. Ready for Phase 7 (final phase).
 
-## What was just done (Phase 5)
+## What was just done (Phase 6)
 
-Findings Tracker, flag-for-review workflow, status transitions state machine, create-from-run.
+Performance Monitor, Add-Model drawer, frequency-approval workflow, Governance.
 
-**State machine** (`src/lib/findings/transitions.ts`):
-Open → In Remediation → Closed; In Remediation → Open reopen. Closed is terminal.
-applyFlag/Unflag/ReviewAction/Assignment. 22 tests.
+**Performance Monitor (`/monitor`)**:
 
-**Create-from-run** (`src/lib/findings/create-from-run.ts`):
-Pre-fills severity (fail→High, warn→Medium), type from testType, desc from failing metrics,
-sourceRunId linkage. 6 tests covering all type mappings.
+- MacroPanel: 4 economic tiles from MACRO_FALLBACK + drill-down quarterly charts on VizCard
+- MonitoringCalendar: test rows with status (Current/Due/Overdue), history dots, Run deep-links
+- Add Model button → AddModelSheet
 
-**UI** (`src/app/(app)/findings/` + `src/components/features/findings/`):
+**Add-Model** (`src/components/features/add-model/AddModelSheet.tsx`):
 
-- Findings Tracker: summary strip (6 count tiles), filter pills, sortable table
-- Tab: All Findings | Review Queue (MRM role)
-- Finding detail: metadata, status controls (transition + closing note), AuditTrail timeline, FlagButton
-- Review Queue: expand/reviewer-notes/approve/request-changes/escalate
-- CreateFindingSheet: react-hook-form + zod, pre-filled from run context
+- react-hook-form + zod form: name, cat, tier, framework, method, desc
+- Test selection with per-test frequency override (non-default → freq-approval request)
+- On save: `userDefined: true` model in inventory + calendar built from selectedTests
 
-**Workbench**: "Create Finding" button on fail/warn results opens CreateFindingSheet.
+**Frequency-approval workflow** (`src/lib/store/frequency-approvals-context.tsx`):
 
-## What to do next (Phase 6)
+- Persists via StorageAdapter (freq-approval: prefix)
+- Calendar shows "pending change" indicator; approved freq takes effect immediately
+- MRM approves/rejects on the Governance page
 
-Read `PRDs/PRD-07-PHASE-6-calendar-governance-addmodel.md`. Build:
+**Governance (`/governance`)**:
 
-1. Performance Monitor (`/monitor`): macro panel + model selector + monitoring calendar
-2. Add-Model drawer: react-hook-form + zod, test selection, frequency config
-3. Frequency-approval workflow: pending → MRM approve/reject → calendar reflects it
-4. Governance (`/governance`): approval pipeline, MRM committee, policy exception log
+- ApprovalPipeline: 6-step SR 11-7 lifecycle + current queue
+- MRMCommittee: next meeting, agenda items, last meeting summary
+- PolicyExceptions: active/pending-renewal exceptions with Renew action
+
+**Wire**: FrequencyApprovalsProvider in (app)/layout.tsx
+
+## What to do next (Phase 7 — FINAL)
+
+Read `PRDs/PRD-08-PHASE-7-dependencies-polish-qa-deploy.md`. Build:
+
+1. **Dependencies** (`/dependencies`) — SVG/Motion model network graph, node click, risk propagation
+2. **Polish** — route/tab transitions, count-up on KPI tiles, reduced-motion, empty/loading/error states everywhere
+3. **Responsive** — sidebar collapses to icon-rail at tablet; tables scroll
+4. **Reset Demo** — confirm dialog + resetDemoData()
+5. **Accessibility pass** — axe, keyboard nav, no color-only signaling
+6. **CI/CD** — GitHub Actions (lint → typecheck → test → build), Vercel prod deploy
+7. **Known gaps wired** — openFx counter from create-finding, run→finding reverse link
 
 ## Branch / commit
 
-- `feature/phase-5-findings` · 78469a0
+- `feature/phase-6-calendar-governance` · 11eada2
 
 ## Verify
 
 ```
-npm run test    # 171/171 pass
-npm run dev     # /findings → flag MRF-001 → switch to MRM → Review Queue → Approve
-                # /workbench → run AML STM → FAIL → Create Finding → MRF-XXXXX
+npm run test    # 176/176 pass
+npm run dev     # /monitor → select CECL-2024-001 → see calendar + history dots
+                # /monitor → Add Model → save → appears in /inventory
+                # /governance → Approval Pipeline + MRM Committee + Policy Exceptions
 ```
