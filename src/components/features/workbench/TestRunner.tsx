@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Play, Upload, Lock } from 'lucide-react';
+import { Play, Upload, Lock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { SurfaceCard } from '@/components/ui/SurfaceCard';
 import { TestResultView } from '@/components/features/results/TestResultView';
 import { RunHistory } from '@/components/features/results/RunHistory';
 import { ExportButton } from '@/components/features/results/ExportButton';
+import { CreateFindingSheet } from '@/components/features/findings/CreateFindingSheet';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRole } from '@/components/features/shell/RoleProvider';
 import { useRunStore } from '@/lib/store/run-store';
@@ -28,6 +29,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
   const [result, setResult] = useState<TestResult | null>(null);
   const [selectedRunId, setSelectedRunId] = useState<string | undefined>(undefined);
   const [useUpload, setUseUpload] = useState(false);
+  const [showCreateFinding, setShowCreateFinding] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const hasEngine = getEngine(model.id, testType) !== null;
 
@@ -124,6 +126,12 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
               MRM Officers cannot run owner tests
             </span>
           )}
+          {result && result.verdict !== 'pass' && (
+            <Button variant="secondary" size="sm" onClick={() => setShowCreateFinding(true)}>
+              <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+              Create Finding
+            </Button>
+          )}
           {result && <ExportButton result={result} modelName={model.name} />}
           <Button
             variant="primary"
@@ -186,6 +194,16 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
           />
         </div>
       </div>
+
+      {showCreateFinding && result && selectedRunId && (
+        <CreateFindingSheet
+          runId={selectedRunId}
+          modelId={model.id}
+          result={result}
+          onClose={() => setShowCreateFinding(false)}
+          onCreated={() => setShowCreateFinding(false)}
+        />
+      )}
     </div>
   );
 }
