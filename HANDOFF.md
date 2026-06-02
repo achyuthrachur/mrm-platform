@@ -2,52 +2,34 @@
 
 ## Status
 
-Phase 1 complete. Ready for Phase 2 (Model Inventory + Dashboard).
+Phase 2 complete. Ready for Phase 3.
 
-## What was just done (Phase 1)
+## What was just done (Phase 2)
 
-Full data layer:
+Model Inventory + Dashboard, fully wired to Phase 1 data.
 
-- **16 models** in `src/lib/data/models.ts` (4 showcase + 12 illustrative)
-- **12 findings** in `findings.ts`
-- **Monitoring calendar** builder + TEST_LABELS + MODEL_TEST_MENU
-- **Test history** dots for all showcase models (prior-quarter verdicts)
-- **Macro** fallback + quarterly series
-- **Dependencies** nodes/edges + peer bank arrays
-- **Illustrative results** (~30 entries, computed:false, no FormulaTrace)
-- **5 generators** (mulberry32 PRNG, deterministic): creLoanTape (2,500), amlTransactions (25,000), amlOverrideLog (12,000), fraudScoredTxns (30,000), almPositions (5,000)
-- **CRE model copy** with planted gaps (6 missing + 8 discrepancies)
-- **Authored reference data**: NII_BACKTEST_SERIES, NII_RATE_SHOCK_SCENARIOS, NII_SENSITIVITY_INPUTS, CRE_STRESS_SCENARIOS
-- **Clock seam**: `getToday() = 2026-04-07`; due/overdue helpers
-- **StorageAdapter** (IndexedDB → localStorage → Memory); `resetDemoData()`
-- **Data-access repo**: getModels, getFindings, getCalendar, getRunHistory, saveRun, etc.
-- **State stores**: `useRunStore` (Zustand), `useModels`, `useFindings`, `useFlags` (React Context)
-- `ModelsProvider`, `FindingsProvider`, `FlagsProvider` wired into `(app)/layout.tsx`
+**Dashboard**: HITLBanner, KPIStrip (6 tiles), TierDonut/RiskDistributionBar/FindingsStatusBar (Recharts on VizCards), RiskHeatMap (5×5 CSS grid, hover tooltips), TestHealthTable (verdict chips → Workbench deep-links).
 
-## What to do next (Phase 2)
+**Model Inventory**: Composable filters (search, category pills, tier, status), role-scope badge, sortable DataTable, model detail page with all fields + quick actions.
 
-Read `PRDs/PRD-03-PHASE-2-inventory-dashboard.md` and build:
+## What to do next (Phase 3)
 
-1. **Model Inventory** (`/inventory`) — filterable table, role-scoped (owner sees only their 3 models), model detail page, quick actions
-2. **Dashboard** (`/dashboard`) — HITL banner, KPI stat tiles (from repo data), charts (Recharts on VizCard indigo panels), risk heat map, test-health chips
+Read `PRDs/PRD-04-PHASE-3-compute-engine-workbench.md`. Build in sub-stages:
 
-Use the Phase 0 component kit (`SurfaceCard`, `VizCard`, `StatTile`, `DataTableShell`, badges). No hardcoded totals — every number derives from the repo.
+**3A**: Engine architecture + stats.ts + source-to-model + PSI/CSI engines
+**3B**: Backtesting (4 flavors) + benchmarking + sensitivity + stress + override engines
+**Then**: FormulaPanel component + Testing Workbench UI (/workbench)
 
-## Files touched this session (Phase 1 additions)
-
-All under `src/lib/` — data, datasets, repo, storage, store. Plus `(app)/layout.tsx` for providers.
+Engines: pure `(inputs) => TestResult`, colocated tests, registry `(modelId, testType) → engine | null`.
 
 ## Branch / commit
 
-- Branch: `feature/phase-1-data-layer`
-- Commit: 8cf3a15
+- `feature/phase-2-inventory-dashboard` · 75bb601
 
-## Verify command
+## Verify
 
 ```
-npm run dev          # http://localhost:3000 (all 7 routes still work)
-npm run lint         # ✅ clean
-npm run typecheck    # ✅ clean
-npm run test         # ✅ 80/80 tests pass
-npm run build        # should pass (no new UI)
+npm run test    # 90/90 pass
+npm run lint    # clean
+npm run dev     # /dashboard + /inventory fully live
 ```
