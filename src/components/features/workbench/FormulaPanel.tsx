@@ -35,7 +35,7 @@ export function FormulaPanel({ formula, className }: FormulaPanelProps) {
   return (
     <div
       className={cn('rounded-card border', className)}
-      style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface)' }}
+      style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-sunken)' }}
     >
       {/* Header */}
       <button
@@ -82,8 +82,8 @@ export function FormulaPanel({ formula, className }: FormulaPanelProps) {
               Equation
             </p>
             <code
-              className="block rounded px-3 py-2 font-mono text-small text-ink"
-              style={{ backgroundColor: 'var(--canvas)' }}
+              className="text-small block rounded px-3 py-2 font-mono text-ink"
+              style={{ backgroundColor: 'var(--surface-sunken)' }}
             >
               {formula.equation}
             </code>
@@ -136,7 +136,7 @@ export function FormulaPanel({ formula, className }: FormulaPanelProps) {
                     <code className="mt-0.5 block font-mono text-caption text-ink-muted">
                       {step.expression}
                     </code>
-                    <p className="mt-0.5 text-small font-semibold tabular-nums text-ink">
+                    <p className="text-small mt-0.5 font-semibold tabular-nums text-ink">
                       = {String(step.value)}
                     </p>
                   </div>
@@ -148,7 +148,7 @@ export function FormulaPanel({ formula, className }: FormulaPanelProps) {
           {/* Result */}
           <div
             className="flex items-center justify-between rounded px-4 py-3"
-            style={{ backgroundColor: 'var(--canvas)' }}
+            style={{ backgroundColor: 'var(--surface-sunken)' }}
           >
             <span className="text-small font-semibold text-ink-secondary">Result</span>
             <span className="text-small font-bold tabular-nums text-ink">

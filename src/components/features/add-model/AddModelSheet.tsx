@@ -195,13 +195,13 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
             </p>
 
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-name">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-name">
                 Model Name
               </label>
               <input
                 id="am-name"
                 {...register('name')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               />
               {errors.name && (
@@ -213,13 +213,13 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-cat">
+                <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-cat">
                   Category
                 </label>
                 <select
                   id="am-cat"
                   {...register('cat')}
-                  className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                  className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 >
                   {CATEGORIES.map((c) => (
@@ -230,13 +230,13 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-sub">
+                <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-sub">
                   Sub-category
                 </label>
                 <input
                   id="am-sub"
                   {...register('sub')}
-                  className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                  className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 />
               </div>
@@ -244,13 +244,13 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-tier">
+                <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-tier">
                   Tier
                 </label>
                 <select
                   id="am-tier"
                   {...register('tier')}
-                  className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                  className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 >
                   <option value="1">Tier 1 — Highest Risk</option>
@@ -259,13 +259,13 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-freq">
+                <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-freq">
                   Monitoring Frequency
                 </label>
                 <select
                   id="am-freq"
                   {...register('monFreq')}
-                  className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                  className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 >
                   {FREQ_OPTIONS.map((f) => (
@@ -279,7 +279,7 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
 
             <div>
               <label
-                className="mb-1.5 block text-small font-medium text-ink"
+                className="text-small mb-1.5 block font-medium text-ink"
                 htmlFor="am-framework"
               >
                 Framework
@@ -287,32 +287,32 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
               <input
                 id="am-framework"
                 {...register('framework')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-method">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-method">
                 Methodology
               </label>
               <input
                 id="am-method"
                 {...register('method')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="am-desc">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="am-desc">
                 Description
               </label>
               <textarea
                 id="am-desc"
                 {...register('desc')}
                 rows={3}
-                className="w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               />
               {errors.desc && (
@@ -361,7 +361,7 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
                       />
                       <label
                         htmlFor={`test-${testType}`}
-                        className="flex-1 cursor-pointer text-small font-medium text-ink"
+                        className="text-small flex-1 cursor-pointer font-medium text-ink"
                       >
                         {testType.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                         <span className="ml-2 font-mono text-caption text-ink-muted">
@@ -373,7 +373,7 @@ export function AddModelSheet({ onClose, onSaved }: AddModelSheetProps) {
                           <select
                             value={currentFreq}
                             onChange={(e) => setFreq(testType, e.target.value)}
-                            className="rounded border bg-surface px-2 py-1 text-caption text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                            className="rounded border bg-surface-sunken px-2 py-1 text-caption text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                             style={{ borderColor: 'var(--border-hairline)' }}
                             aria-label={`Frequency for ${testType}`}
                           >

@@ -1,39 +1,19 @@
 import { cn } from '@/lib/utils';
-import type { TrafficLight as TrafficLightType } from '@/types';
+import type { TrafficLight as TLType } from '@/types';
 
 interface TrafficLightProps {
-  light: TrafficLightType;
+  light: TLType;
   showLabel?: boolean;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
-const LIGHT_CONFIG: Record<
-  TrafficLightType,
-  { colorVar: string; label: string; ariaLabel: string }
-> = {
-  Green: {
-    colorVar: 'var(--status-pass)',
-    label: 'Green',
-    ariaLabel: 'Green — acceptable performance',
-  },
-  Yellow: {
-    colorVar: 'var(--status-warn)',
-    label: 'Yellow',
-    ariaLabel: 'Yellow — monitor closely',
-  },
-  Red: {
-    colorVar: 'var(--status-fail)',
-    label: 'Red',
-    ariaLabel: 'Red — action required',
-  },
+const CFG: Record<TLType, { color: string; label: string; aria: string }> = {
+  Green: { color: 'var(--status-pass)', label: 'Green', aria: 'Green — acceptable' },
+  Yellow: { color: 'var(--status-warn)', label: 'Yellow', aria: 'Yellow — monitor' },
+  Red: { color: 'var(--status-fail)', label: 'Red', aria: 'Red — action required' },
 };
-
-const SIZE_MAP = {
-  sm: 'w-2 h-2',
-  md: 'w-3 h-3',
-  lg: 'w-4 h-4',
-};
+const DOT = { sm: 'h-2 w-2', md: 'h-2.5 w-2.5', lg: 'h-3.5 w-3.5' };
 
 export function TrafficLight({
   light,
@@ -41,22 +21,21 @@ export function TrafficLight({
   size = 'md',
   className,
 }: TrafficLightProps) {
-  const config = LIGHT_CONFIG[light];
-
+  const c = CFG[light];
   return (
     <span
       className={cn('inline-flex items-center gap-1.5', className)}
       role="img"
-      aria-label={config.ariaLabel}
+      aria-label={c.aria}
     >
       <span
-        className={cn('shrink-0 rounded-full', SIZE_MAP[size])}
-        style={{ backgroundColor: config.colorVar }}
+        className={cn('shrink-0 rounded-full', DOT[size])}
+        style={{ backgroundColor: c.color }}
         aria-hidden="true"
       />
       {showLabel && (
-        <span className="text-small font-medium" style={{ color: config.colorVar }}>
-          {config.label}
+        <span className="text-body-sm font-medium" style={{ color: c.color }}>
+          {c.label}
         </span>
       )}
     </span>

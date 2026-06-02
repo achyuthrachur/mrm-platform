@@ -96,7 +96,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="login-email">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="login-email">
                 Email
               </label>
               <input
@@ -104,7 +104,7 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 {...register('email')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               />
               {errors.email && (
@@ -116,7 +116,7 @@ export default function LoginPage() {
 
             <div>
               <label
-                className="mb-1.5 block text-small font-medium text-ink"
+                className="text-small mb-1.5 block font-medium text-ink"
                 htmlFor="login-password"
               >
                 Password
@@ -127,7 +127,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   {...register('password')}
-                  className="w-full rounded-md border bg-surface px-3 py-2 pr-10 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                  className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 pr-10 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 />
                 <button

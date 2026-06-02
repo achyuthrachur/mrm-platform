@@ -56,7 +56,7 @@ export default function GovernancePage() {
                     <p className="mt-0.5 text-caption text-ink-muted">
                       Requested: {req.requestedFrequency} (default: {req.defaultFrequency})
                     </p>
-                    <p className="mt-1 text-small text-ink-secondary">{req.justification}</p>
+                    <p className="text-small mt-1 text-ink-secondary">{req.justification}</p>
                     <p className="mt-0.5 text-caption text-ink-muted">
                       Submitted by {req.requestedBy} · {req.requestedAt.slice(0, 10)}
                     </p>
@@ -70,7 +70,7 @@ export default function GovernancePage() {
                     }
                     placeholder="Reviewer note (optional)..."
                     rows={2}
-                    className="placeholder-ink-muted w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                    className="placeholder-ink-muted text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                     style={{ borderColor: 'var(--border-hairline)' }}
                     aria-label="Reviewer note"
                   />

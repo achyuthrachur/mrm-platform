@@ -10,11 +10,11 @@ export function DataTableShell({ children, className, caption }: DataTableShellP
   return (
     <div
       className={cn('overflow-auto rounded-card', className)}
-      style={{ boxShadow: 'var(--shadow-card)' }}
+      style={{ boxShadow: 'var(--elev-1)' }}
     >
       <table
-        className="w-full border-collapse text-small text-ink"
-        style={{ backgroundColor: 'var(--surface)' }}
+        className="w-full border-collapse bg-surface text-body"
+        style={{ minWidth: '100%' }}
         aria-label={caption}
       >
         {children}
@@ -47,7 +47,7 @@ export function DataTableHeaderCell({
     <th
       scope="col"
       className={cn(
-        'whitespace-nowrap px-4 py-3 text-caption font-semibold uppercase tracking-wide text-ink-muted',
+        'whitespace-nowrap px-4 py-3 text-eyebrow font-semibold uppercase tracking-[0.06em] text-ink-muted',
         numeric && 'text-right tabular-nums',
         className
       )}
@@ -75,7 +75,7 @@ export function DataTableRow({
       onClick={onClick}
       className={cn(
         'border-t transition-colors',
-        onClick && 'cursor-pointer hover:bg-[var(--canvas)]',
+        onClick && 'cursor-pointer hover:bg-neutral-50',
         className
       )}
       style={{ borderColor: 'var(--border-hairline)' }}
@@ -99,7 +99,7 @@ export function DataTableCell({
   return (
     <td
       className={cn(
-        'px-4 py-3 text-small text-ink',
+        'px-4 py-3 text-body text-ink-body',
         numeric && 'text-right font-medium tabular-nums',
         className
       )}
