@@ -4,130 +4,21 @@ import { useState, useRef } from 'react';
 import { Play, Upload, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
-import { VerdictChip } from '@/components/ui/VerdictChip';
-import { TrafficLight } from '@/components/ui/TrafficLight';
-import { StatusBadge } from '@/components/ui/StatusBadge';
 import { SurfaceCard } from '@/components/ui/SurfaceCard';
-import { FormulaPanel } from './FormulaPanel';
+import { TestResultView } from '@/components/features/results/TestResultView';
+import { RunHistory } from '@/components/features/results/RunHistory';
+import { ExportButton } from '@/components/features/results/ExportButton';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRole } from '@/components/features/shell/RoleProvider';
 import { useRunStore } from '@/lib/store/run-store';
 import { getEngine } from '@/lib/engines';
 import { ILLUSTRATIVE_RESULTS } from '@/lib/data/illustrative-results';
 import { TEST_LABELS } from '@/lib/data/monitoring-calendar';
-import type { Model, TestType, TestResult } from '@/types';
+import type { Model, TestType, TestResult, TestRun } from '@/types';
 
 interface TestRunnerProps {
   model: Model;
   testType: TestType;
-}
-
-function ResultView({ result }: { result: TestResult }) {
-  return (
-    <div className="space-y-4">
-      {/* Verdict header */}
-      <div
-        className="flex items-center gap-4 rounded-card border p-4"
-        style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--canvas)' }}
-      >
-        <VerdictChip verdict={result.verdict} size="lg" />
-        <TrafficLight light={result.trafficLight} showLabel />
-        <div className="ml-2 flex items-center gap-2">
-          <StatusBadge status="info" label={result.dataConf} size="sm" />
-          {result.computed ? (
-            <span
-              className="rounded px-2 py-0.5 text-caption font-medium"
-              style={{ backgroundColor: 'var(--status-info-bg)', color: 'var(--status-info)' }}
-            >
-              Computed
-            </span>
-          ) : (
-            <span
-              className="rounded px-2 py-0.5 text-caption font-medium"
-              style={{ backgroundColor: 'var(--status-warn-bg)', color: 'var(--status-warn)' }}
-            >
-              Illustrative — not computed from live data
-            </span>
-          )}
-        </div>
-        <div className="ml-auto text-right">
-          <p className="text-caption text-ink-muted">Period</p>
-          <p className="text-small font-medium text-ink">{result.period}</p>
-        </div>
-        <div className="text-right">
-          <p className="text-caption text-ink-muted">Run Date</p>
-          <p className="text-small font-medium text-ink">{result.runDate}</p>
-        </div>
-      </div>
-
-      {/* Metrics table */}
-      <SurfaceCard title="Metrics">
-        <div className="space-y-0">
-          {result.metrics.map((m, i) => (
-            <div
-              key={i}
-              className={`flex items-start gap-4 py-2.5 ${i > 0 ? 'border-t' : ''}`}
-              style={{ borderColor: 'var(--border-hairline)' }}
-            >
-              <div className="mt-0.5 w-6 shrink-0">
-                <StatusBadge status={m.status === 'info' ? 'info' : m.status} size="sm" label="" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-small font-medium text-ink">{m.label}</p>
-                {m.note && <p className="mt-0.5 text-caption text-ink-muted">{m.note}</p>}
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="text-small font-semibold tabular-nums text-ink">{m.value}</p>
-                {m.threshold && m.threshold !== '—' && (
-                  <p className="mt-0.5 text-caption text-ink-muted">{m.threshold}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </SurfaceCard>
-
-      {/* Formula panel (only for computed) */}
-      {result.computed && result.formula && <FormulaPanel formula={result.formula} />}
-
-      {/* Findings and recommendation */}
-      {result.findings.length > 0 && (
-        <SurfaceCard title="Findings">
-          <ul className="space-y-2">
-            {result.findings.map((f, i) => (
-              <li key={i} className="flex gap-2 text-small text-ink-secondary">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--status-fail)]" />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </SurfaceCard>
-      )}
-
-      {result.recommendation && (
-        <SurfaceCard title="Recommendation">
-          <p className="text-small text-ink-secondary">{result.recommendation}</p>
-        </SurfaceCard>
-      )}
-
-      {/* Data notes */}
-      {(result.dataGaps?.length ?? 0) > 0 && (
-        <SurfaceCard title="Data Gaps & Quality">
-          {result.dataNote && (
-            <p className="mb-2 text-small text-ink-secondary">{result.dataNote}</p>
-          )}
-          <ul className="space-y-1">
-            {result.dataGaps?.map((g, i) => (
-              <li key={i} className="flex gap-2 text-small text-ink-muted">
-                <span className="text-[var(--status-warn)]">△</span>
-                {g}
-              </li>
-            ))}
-          </ul>
-        </SurfaceCard>
-      )}
-    </div>
-  );
 }
 
 export function TestRunner({ model, testType }: TestRunnerProps) {
@@ -135,6 +26,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
   const { currentUser } = useRole();
   const { runTest, isRunning } = useRunStore();
   const [result, setResult] = useState<TestResult | null>(null);
+  const [selectedRunId, setSelectedRunId] = useState<string | undefined>(undefined);
   const [useUpload, setUseUpload] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const hasEngine = getEngine(model.id, testType) !== null;
@@ -149,7 +41,6 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         const engine = getEngine(model.id, testType)!;
         testResult = engine({ modelId: model.id });
       } else {
-        // Return illustrative result
         const illustrative = ILLUSTRATIVE_RESULTS.find(
           (r) => r.modelId === model.id && r.testType === testType
         );
@@ -160,13 +51,24 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         testResult = { ...illustrative };
       }
 
-      await runTest({ modelId: model.id, testType, result: testResult, runBy: currentUser });
+      const run = await runTest({
+        modelId: model.id,
+        testType,
+        result: testResult,
+        runBy: currentUser,
+      });
       setResult(testResult);
+      setSelectedRunId(run.id);
       toast.success(`${TEST_LABELS[testType]} completed — ${testResult.verdict.toUpperCase()}`);
     } catch (err) {
       toast.error('Engine error — see console for details');
       console.error(err);
     }
+  }
+
+  function handleSelectRun(run: TestRun) {
+    setResult(run.result);
+    setSelectedRunId(run.id);
   }
 
   const canUploadCSV = ['source-to-model', 'psi', 'csi'].includes(testType);
@@ -181,7 +83,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
             className={`rounded-md border px-3 py-1.5 text-small transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] ${
               useUpload
                 ? 'border-[var(--ink)] bg-[var(--ink)] text-white'
-                : 'border-[var(--border-hairline)] bg-surface text-ink'
+                : 'border-[var(--border-hairline)] bg-surface text-ink hover:border-[var(--ink)]'
             }`}
           >
             {useUpload ? 'Using uploaded CSV' : 'Generated demo dataset'}
@@ -222,6 +124,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
               MRM Officers cannot run owner tests
             </span>
           )}
+          {result && <ExportButton result={result} modelName={model.name} />}
           <Button
             variant="primary"
             size="md"
@@ -236,7 +139,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         </div>
       </div>
 
-      {/* Engine status indicator */}
+      {/* Engine status */}
       <div className="flex items-center gap-2">
         {hasEngine ? (
           <span
@@ -255,8 +158,34 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         )}
       </div>
 
-      {/* Results */}
-      {result && <ResultView result={result} />}
+      {/* Main result + run history side by side */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_280px]">
+        <div>
+          {result ? (
+            <TestResultView result={result} />
+          ) : (
+            <SurfaceCard>
+              <div className="flex flex-col items-center py-8 text-center">
+                <p className="text-small text-ink-muted">
+                  {canRunTests
+                    ? 'Click Run to execute the test.'
+                    : 'Switch to Owner role to run tests.'}
+                </p>
+              </div>
+            </SurfaceCard>
+          )}
+        </div>
+
+        {/* Run history sidebar */}
+        <div>
+          <RunHistory
+            modelId={model.id}
+            testType={testType}
+            selectedRunId={selectedRunId}
+            onSelectRun={handleSelectRun}
+          />
+        </div>
+      </div>
     </div>
   );
 }
