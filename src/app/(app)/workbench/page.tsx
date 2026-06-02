@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, ChevronRight } from 'lucide-react';
 import { useModels } from '@/lib/store/models-context';
@@ -11,7 +11,7 @@ import { TestRunner } from '@/components/features/workbench/TestRunner';
 import { TEST_LABELS } from '@/lib/data/monitoring-calendar';
 import type { Model, TestType } from '@/types';
 
-export default function WorkbenchPage() {
+function WorkbenchContent() {
   const { models, loading } = useModels();
   const searchParams = useSearchParams();
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
@@ -200,5 +200,13 @@ export default function WorkbenchPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WorkbenchPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-small text-ink-muted">Loading workbench…</div>}>
+      <WorkbenchContent />
+    </Suspense>
   );
 }
