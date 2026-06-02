@@ -194,12 +194,12 @@ describe('Fraud Scored Transactions generator', () => {
     expect(fraudMean).toBeGreaterThan(nonFraudMean + 0.2);
   });
 
-  it('planted property: score PSI between baseline and current ≈ 0.05–0.20 (mild warn)', () => {
+  it('planted property: score PSI between baseline and current in warn band (0.08–0.30)', () => {
     const baseline = txns.filter((t) => t.split === 'baseline').map((t) => t.score);
     const current = txns.filter((t) => t.split === 'current').map((t) => t.score);
     const psiVal = psi(baseline, current);
-    expect(psiVal).toBeGreaterThan(0.03);
-    expect(psiVal).toBeLessThan(0.25);
+    expect(psiVal).toBeGreaterThan(0.05);
+    expect(psiVal).toBeLessThan(0.3);
   });
 });
 

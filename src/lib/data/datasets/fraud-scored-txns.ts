@@ -79,7 +79,8 @@ export function generateFraudScoredTxns(
 
     // Score distribution: fraud ≈ N(0.68, 0.18), non-fraud ≈ N(0.32, 0.18)
     // Current split: slight upward drift of 0.04 in non-fraud mean → PSI warn
-    const nonFraudMean = split === 'baseline' ? 0.32 : 0.36;
+    // Current split: +0.07 drift in non-fraud mean → PSI ≈ 0.15 (warn band 0.10–0.25)
+    const nonFraudMean = split === 'baseline' ? 0.32 : 0.39;
     const rawScore = isFraud
       ? normalSample(rand, 0.68, 0.18)
       : normalSample(rand, nonFraudMean, 0.18);
