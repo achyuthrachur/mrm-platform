@@ -59,7 +59,17 @@
 
   /* Layout */
   --sidebar-width: 240px;
+  --sidebar-width-collapsed: 56px;
   --header-height: 56px;
+}
+
+/* ── Responsive: collapse sidebar to icon-rail at tablet ──────────────── */
+@media (max-width: 768px) {
+  :root,
+  [data-theme='light'],
+  [data-theme='dark'] {
+    --sidebar-width: var(--sidebar-width-collapsed);
+  }
 }
 
 [data-theme='dark'] {

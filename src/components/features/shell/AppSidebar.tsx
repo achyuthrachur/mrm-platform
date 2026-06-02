@@ -78,7 +78,7 @@ export function AppSidebar() {
                   )}
 
                   <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span className="truncate">{item.label}</span>
+                  <span className="hidden truncate sm:block">{item.label}</span>
 
                   {item.beta && (
                     <span

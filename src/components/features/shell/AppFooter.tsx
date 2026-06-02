@@ -1,3 +1,7 @@
+'use client';
+
+import { ResetDemoButton } from './ResetDemoButton';
+
 export function AppFooter() {
   return (
     <footer
@@ -6,7 +10,10 @@ export function AppFooter() {
       role="contentinfo"
     >
       <span>Demo environment — not for distribution</span>
-      <span>© {new Date().getFullYear()} Crowe LLP</span>
+      <div className="flex items-center gap-4">
+        <ResetDemoButton />
+        <span>© {new Date().getFullYear()} Crowe LLP</span>
+      </div>
     </footer>
   );
 }
