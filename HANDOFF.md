@@ -2,34 +2,49 @@
 
 ## Status
 
-Phase 2 complete. Ready for Phase 3.
+Phase 3 complete. Ready for Phase 4.
 
-## What was just done (Phase 2)
+## What was just done (Phase 3)
 
-Model Inventory + Dashboard, fully wired to Phase 1 data.
+Real compute engines, FormulaPanel, and Testing Workbench.
 
-**Dashboard**: HITLBanner, KPIStrip (6 tiles), TierDonut/RiskDistributionBar/FindingsStatusBar (Recharts on VizCards), RiskHeatMap (5×5 CSS grid, hover tooltips), TestHealthTable (verdict chips → Workbench deep-links).
+**Engines** (`src/lib/engines/`):
 
-**Model Inventory**: Composable filters (search, category pills, tier, status), role-scope badge, sortable DataTable, model detail page with all fields + quick actions.
+- `stats.ts` — mean, std, RMSE, MAPE, PSI, AUC/Gini, percentileRank, varianceShares (all unit-tested)
+- `source-to-model.ts` — CRE (warn), AML (fail), ALM (pass)
+- `psi-csi.ts` — CRE PSI (warn), Fraud PSI (warn), Fraud CSI (pass)
+- `backtesting/` — CRE (warn), AML (pass), NII (pass), Fraud (pass)
+- `benchmarking.ts` — AML (warn), Fraud (pass)
+- `sensitivity.ts` — NII (warn)
+- `stress.ts` — CRE (pass), NII (warn)
+- `override.ts` — AML override (pass)
+- `index.ts` — registry with all 16 computed pairs
 
-## What to do next (Phase 3)
+All 16 planted verdicts verified by `engines.test.ts`.
 
-Read `PRDs/PRD-04-PHASE-3-compute-engine-workbench.md`. Build in sub-stages:
+**UI**:
 
-**3A**: Engine architecture + stats.ts + source-to-model + PSI/CSI engines
-**3B**: Backtesting (4 flavors) + benchmarking + sensitivity + stress + override engines
-**Then**: FormulaPanel component + Testing Workbench UI (/workbench)
+- `FormulaPanel` — collapsible, copy-to-clipboard, shows equation/inputs/steps/result/reference
+- `TestRunner` — run button (permission-gated), data source toggle, result view, illustrative badge
+- `/workbench` — searchable model selector, test picker, deep-link support (`?model=&test=`)
 
-Engines: pure `(inputs) => TestResult`, colocated tests, registry `(modelId, testType) → engine | null`.
+## What to do next (Phase 4)
+
+Read `PRDs/PRD-05-PHASE-4-results-export.md`. Build:
+
+1. `<TestResultView result={TestResult} />` — unified result rendering (verdict header, metrics, charts, FormulaPanel, narrative blocks, STM-specific rich view)
+2. `RunHistory` — per model+test, list prior runs from run store
+3. Export: `exportResult(result, format)` → CSV, XLSX, PDF downloads
+4. Wire into Workbench + model detail page
 
 ## Branch / commit
 
-- `feature/phase-2-inventory-dashboard` · 75bb601
+- `feature/phase-3-engines-workbench` · 3c034f1
 
 ## Verify
 
 ```
-npm run test    # 90/90 pass
+npm run test    # 139/139 pass
 npm run lint    # clean
-npm run dev     # /dashboard + /inventory fully live
+npm run dev     # /workbench → select CECL-2024-001 → Source-to-Model → Run → see FormulaTrace
 ```
