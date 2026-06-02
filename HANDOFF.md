@@ -2,57 +2,52 @@
 
 ## Status
 
-Phase 0 complete. Ready for Phase 1.
+Phase 1 complete. Ready for Phase 2 (Model Inventory + Dashboard).
 
-## What was just done (Phase 0)
+## What was just done (Phase 1)
 
-Full Next.js 15 scaffold with the Light Premium Crowe design system:
+Full data layer:
 
-- `package.json`, `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, `.prettierrc`, `vitest.config.ts`
-- `src/styles/globals.css` — full token system (canvas/surface/surface-viz/ink/accent/status/shadows/radius), dark theme via `data-theme`
-- Font: Plus Jakarta Sans Variable via `@fontsource-variable/plus-jakarta-sans` (Google Fonts blocked by corporate proxy — recorded in PHASE-0-NOTES.md)
-- Component kit: `StatTile`, `SurfaceCard`, `VizCard` (indigo), `DataTableShell`, `StatusBadge`, `TierBadge`, `VerdictChip`, `TrafficLight`, `Eyebrow`, `Button`
-- Shell: `AppHeader`, `AppSidebar`, `AppFooter`
-- Providers: `ThemeProvider`, `RoleProvider` (both with localStorage persistence + OS defaults)
-- `usePermissions()` hook (owner/MRM RBAC-shaped permission sets)
-- 7 placeholder routes + root redirect + `(app)/layout.tsx`
-- Logo SVGs copied from Crowe-Sentinel to `public/`
-- Husky + lint-staged pre-commit hook (ESLint flat config v9)
-- `PHASE-0-NOTES.md` written
+- **16 models** in `src/lib/data/models.ts` (4 showcase + 12 illustrative)
+- **12 findings** in `findings.ts`
+- **Monitoring calendar** builder + TEST_LABELS + MODEL_TEST_MENU
+- **Test history** dots for all showcase models (prior-quarter verdicts)
+- **Macro** fallback + quarterly series
+- **Dependencies** nodes/edges + peer bank arrays
+- **Illustrative results** (~30 entries, computed:false, no FormulaTrace)
+- **5 generators** (mulberry32 PRNG, deterministic): creLoanTape (2,500), amlTransactions (25,000), amlOverrideLog (12,000), fraudScoredTxns (30,000), almPositions (5,000)
+- **CRE model copy** with planted gaps (6 missing + 8 discrepancies)
+- **Authored reference data**: NII_BACKTEST_SERIES, NII_RATE_SHOCK_SCENARIOS, NII_SENSITIVITY_INPUTS, CRE_STRESS_SCENARIOS
+- **Clock seam**: `getToday() = 2026-04-07`; due/overdue helpers
+- **StorageAdapter** (IndexedDB → localStorage → Memory); `resetDemoData()`
+- **Data-access repo**: getModels, getFindings, getCalendar, getRunHistory, saveRun, etc.
+- **State stores**: `useRunStore` (Zustand), `useModels`, `useFindings`, `useFlags` (React Context)
+- `ModelsProvider`, `FindingsProvider`, `FlagsProvider` wired into `(app)/layout.tsx`
 
-## What to do next (Phase 1)
+## What to do next (Phase 2)
 
-Read PRD-02-PHASE-1-data-domain.md and start Phase 1: Data Layer, Domain Model & Persistence Seam.
+Read `PRDs/PRD-03-PHASE-2-inventory-dashboard.md` and build:
 
-Phase 1 delivers:
+1. **Model Inventory** (`/inventory`) — filterable table, role-scoped (owner sees only their 3 models), model detail page, quick actions
+2. **Dashboard** (`/dashboard`) — HITL banner, KPI stat tiles (from repo data), charts (Recharts on VizCard indigo panels), risk heat map, test-health chips
 
-1. All remaining types in `src/types/` (SelectedTest, MonitoringCalendarEntry, etc. — many already stubbed)
-2. Ported seed data modules in `src/lib/data/` (models.ts, findings.ts, monitoring-calendar.ts, test-history.ts, macro.ts, dependencies.ts, peers.ts, illustrative-results.ts)
-3. Synthetic dataset generators in `src/lib/data/datasets/` (creLoanTape, amlTransactions, amlOverrideLog, fraudScoredTxns, almPositions)
-4. Data-access layer `src/lib/repo/`
-5. StorageAdapter (`IndexedDbAdapter`, `LocalStorageAdapter`, `MemoryAdapter`) in `src/lib/storage/`
-6. App state store (React Context + Zustand run store)
-7. Clock seam `src/lib/clock.ts` (demo "now" ≈ 2026-04-07)
+Use the Phase 0 component kit (`SurfaceCard`, `VizCard`, `StatTile`, `DataTableShell`, badges). No hardcoded totals — every number derives from the repo.
 
-## Files touched this session
+## Files touched this session (Phase 1 additions)
 
-- All files under `src/`, root config files, `public/`, `reference/`, `PRDs/`
-- Branch: `feature/phase-0-foundation`
-- Commit: 069fe3d
+All under `src/lib/` — data, datasets, repo, storage, store. Plus `(app)/layout.tsx` for providers.
+
+## Branch / commit
+
+- Branch: `feature/phase-1-data-layer`
+- Commit: 8cf3a15
 
 ## Verify command
 
 ```
-npm run dev          # → localhost:3000 (redirects to /dashboard)
+npm run dev          # http://localhost:3000 (all 7 routes still work)
 npm run lint         # ✅ clean
 npm run typecheck    # ✅ clean
-npm run test         # ✅ 23 tests pass
-npm run build        # ✅ 9 routes build
+npm run test         # ✅ 80/80 tests pass
+npm run build        # should pass (no new UI)
 ```
-
-## Known gaps / notes
-
-- Criterion 5 (shell reads "light premium" — reviewer sign-off) is ⏳ pending your visual review
-- `next lint` deprecation warning in Next.js 15 — informational only; lint is clean
-- Corporate proxy blocks Google Fonts — addressed via fontsource npm package
-- Multiple lockfile warning from Next.js (parent dir has a root package-lock.json) — benign
