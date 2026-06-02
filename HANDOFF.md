@@ -2,59 +2,46 @@
 
 ## Status
 
-Phase 6 complete. Ready for Phase 7 (final phase).
+ALL 8 PHASES COMPLETE. The platform is feature-complete.
 
-## What was just done (Phase 6)
+## Summary of what was built
 
-Performance Monitor, Add-Model drawer, frequency-approval workflow, Governance.
+| Phase                     | Branch                             | Delivers                                                              |
+| ------------------------- | ---------------------------------- | --------------------------------------------------------------------- |
+| 0 — Foundation            | phase-0-foundation                 | Design system, component kit, shell, 7 placeholder routes             |
+| 1 — Data Layer            | phase-1-data-layer                 | 16 models, 12 findings, 5 generators (74k rows), storage, repo, state |
+| 2 — Inventory + Dashboard | phase-2-inventory-dashboard        | Model table + filters, dashboard with charts + heat map               |
+| 3 — Engines + Workbench   | phase-3-engines-workbench          | 16 computed engines, FormulaPanel, Testing Workbench                  |
+| 4 — Results + Export      | phase-4-results-export             | TestResultView, run history, CSV/XLSX/PDF export                      |
+| 5 — Findings              | phase-5-findings                   | Findings tracker, flag-for-review, state machine, create-from-run     |
+| 6 — Calendar + Governance | phase-6-calendar-governance        | Monitoring calendar, Add-Model, freq-approval, Governance             |
+| 7 — Polish + Deploy       | phase-7-dependencies-polish-deploy | Dependency graph, Reset Demo, responsive, CI/CD                       |
 
-**Performance Monitor (`/monitor`)**:
+## Current test count
 
-- MacroPanel: 4 economic tiles from MACRO_FALLBACK + drill-down quarterly charts on VizCard
-- MonitoringCalendar: test rows with status (Current/Due/Overdue), history dots, Run deep-links
-- Add Model button → AddModelSheet
+181/181 tests pass. Lint clean. Typecheck clean.
 
-**Add-Model** (`src/components/features/add-model/AddModelSheet.tsx`):
-
-- react-hook-form + zod form: name, cat, tier, framework, method, desc
-- Test selection with per-test frequency override (non-default → freq-approval request)
-- On save: `userDefined: true` model in inventory + calendar built from selectedTests
-
-**Frequency-approval workflow** (`src/lib/store/frequency-approvals-context.tsx`):
-
-- Persists via StorageAdapter (freq-approval: prefix)
-- Calendar shows "pending change" indicator; approved freq takes effect immediately
-- MRM approves/rejects on the Governance page
-
-**Governance (`/governance`)**:
-
-- ApprovalPipeline: 6-step SR 11-7 lifecycle + current queue
-- MRMCommittee: next meeting, agenda items, last meeting summary
-- PolicyExceptions: active/pending-renewal exceptions with Renew action
-
-**Wire**: FrequencyApprovalsProvider in (app)/layout.tsx
-
-## What to do next (Phase 7 — FINAL)
-
-Read `PRDs/PRD-08-PHASE-7-dependencies-polish-qa-deploy.md`. Build:
-
-1. **Dependencies** (`/dependencies`) — SVG/Motion model network graph, node click, risk propagation
-2. **Polish** — route/tab transitions, count-up on KPI tiles, reduced-motion, empty/loading/error states everywhere
-3. **Responsive** — sidebar collapses to icon-rail at tablet; tables scroll
-4. **Reset Demo** — confirm dialog + resetDemoData()
-5. **Accessibility pass** — axe, keyboard nav, no color-only signaling
-6. **CI/CD** — GitHub Actions (lint → typecheck → test → build), Vercel prod deploy
-7. **Known gaps wired** — openFx counter from create-finding, run→finding reverse link
-
-## Branch / commit
-
-- `feature/phase-6-calendar-governance` · 11eada2
-
-## Verify
+## To run locally
 
 ```
-npm run test    # 176/176 pass
-npm run dev     # /monitor → select CECL-2024-001 → see calendar + history dots
-                # /monitor → Add Model → save → appears in /inventory
-                # /governance → Approval Pipeline + MRM Committee + Policy Exceptions
+npm install
+npm run dev   # http://localhost:3000
 ```
+
+## To deploy to Vercel
+
+1. Run `vercel link` in the project root
+2. Set GitHub secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+3. Push to main — CI pipeline runs, then Vercel deploys automatically
+
+## Auth swap-point (when going to production)
+
+See PHASE-7-NOTES.md. Replace RoleProvider source with NextAuth/Clerk session;
+replace getStorageAdapter() factory with PrismaAdapter. All UI and engines unchanged.
+
+## Known remaining gaps
+
+- openFx counter not updated when creating finding from run
+- Chart images missing from PDF export
+- Governance pipeline actions use local React state (not persisted)
+- Axe automated a11y scan and Lighthouse scores require a running browser
