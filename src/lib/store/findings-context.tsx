@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getFindings, saveFinding } from '@/lib/repo';
+import { getModelsWithFxCounts, saveModel } from '@/lib/repo';
 import type { Finding, AuditEntry } from '@/types';
 
 interface FindingsContextValue {
@@ -43,14 +44,27 @@ export function FindingsProvider({ children }: { children: React.ReactNode }) {
     return findings.find((f) => f.id === id) ?? null;
   }
 
+  /** After any finding mutation that could change openFx, recompute model counts. */
+  async function syncModelOpenFx() {
+    const updated = await getModelsWithFxCounts();
+    // Persist the updated openFx on each model that has changed
+    for (const model of updated) {
+      await saveModel(model);
+    }
+  }
+
   async function updateFinding(finding: Finding): Promise<void> {
     await saveFinding(finding);
     setFindings((prev) => prev.map((f) => (f.id === finding.id ? finding : f)));
+    // Recompute openFx whenever status changes (e.g., Open→Closed decrements count)
+    await syncModelOpenFx();
   }
 
   async function createFinding(finding: Finding): Promise<void> {
     await saveFinding(finding);
     setFindings((prev) => [finding, ...prev]);
+    // New open finding increments the model's openFx
+    await syncModelOpenFx();
   }
 
   async function appendAuditEntry(findingId: string, entry: AuditEntry): Promise<void> {

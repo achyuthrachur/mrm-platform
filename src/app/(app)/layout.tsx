@@ -1,3 +1,9 @@
+'use client';
+
+import {
+  useSupabaseAuth,
+  SupabaseAuthProvider,
+} from '@/components/features/shell/SupabaseAuthProvider';
 import { ThemeProvider } from '@/components/features/shell/ThemeProvider';
 import { RoleProvider } from '@/components/features/shell/RoleProvider';
 import { AppHeader } from '@/components/features/shell/AppHeader';
@@ -9,10 +15,12 @@ import { FlagsProvider } from '@/lib/store/flags-context';
 import { FrequencyApprovalsProvider } from '@/lib/store/frequency-approvals-context';
 import { Toaster } from 'sonner';
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+function AppShell({ children }: { children: React.ReactNode }) {
+  const { sessionRole, currentUser } = useSupabaseAuth();
+
   return (
     <ThemeProvider>
-      <RoleProvider>
+      <RoleProvider initialRole={sessionRole} initialUser={currentUser}>
         <ModelsProvider>
           <FindingsProvider>
             <FlagsProvider>
@@ -41,5 +49,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </ModelsProvider>
       </RoleProvider>
     </ThemeProvider>
+  );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SupabaseAuthProvider>
+      <AppShell>{children}</AppShell>
+    </SupabaseAuthProvider>
   );
 }

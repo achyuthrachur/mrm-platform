@@ -8,7 +8,8 @@ export type ExportFormat = 'csv' | 'xlsx' | 'pdf';
 export async function exportResult(
   result: TestResult,
   modelName: string,
-  format: ExportFormat
+  format: ExportFormat,
+  chartImageDataUrl?: string
 ): Promise<void> {
   const slug = `${result.modelId}-${result.testType}-${result.period.replace(/\s/g, '-')}`;
 
@@ -25,7 +26,7 @@ export async function exportResult(
   }
 
   if (format === 'pdf') {
-    const doc = buildPDF(result, modelName);
+    const doc = buildPDF(result, modelName, chartImageDataUrl);
     downloadPDF(doc, `${slug}.pdf`);
     return;
   }

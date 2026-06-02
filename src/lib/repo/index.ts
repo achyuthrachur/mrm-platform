@@ -133,3 +133,16 @@ export async function getCalendar(modelId: string): Promise<MonitoringCalendarEn
 export function getDataset(id: string): Dataset<unknown> | null {
   return getDatasetById(id);
 }
+
+/**
+ * Returns all models with openFx computed dynamically from active (non-Closed) findings.
+ * This is the source of truth — never rely on the stored openFx integer directly.
+ */
+export async function getModelsWithFxCounts(): Promise<Model[]> {
+  const [models, findings] = await Promise.all([getModels(), getFindings()]);
+  const openFxByModel = new Map<string, number>();
+  findings
+    .filter((f) => f.status !== 'Closed')
+    .forEach((f) => openFxByModel.set(f.modelId, (openFxByModel.get(f.modelId) ?? 0) + 1));
+  return models.map((m) => ({ ...m, openFx: openFxByModel.get(m.id) ?? 0 }));
+}

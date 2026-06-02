@@ -1,9 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { Moon, Sun, ChevronDown, Building2 } from 'lucide-react';
+import { Moon, Sun, ChevronDown, Building2, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { useRole } from './RoleProvider';
+import { useSupabaseAuth } from './SupabaseAuthProvider';
 import type { Role } from '@/types';
 
 const ROLE_LABELS: Record<Role, string> = {
@@ -19,6 +21,13 @@ const ROLE_COLORS: Record<Role, string> = {
 export function AppHeader() {
   const { theme, toggleTheme } = useTheme();
   const { role, setRole, currentUser } = useRole();
+  const { user, signOut } = useSupabaseAuth();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await signOut();
+    router.push('/login');
+  }
 
   return (
     <header
@@ -92,6 +101,17 @@ export function AppHeader() {
             <Sun className="h-4 w-4" aria-hidden="true" />
           )}
         </button>
+
+        {/* Sign out — only shown when a real Supabase session exists */}
+        {user && (
+          <button
+            onClick={handleSignOut}
+            aria-label="Sign out"
+            className="flex h-8 w-8 items-center justify-center rounded text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F5A800]"
+          >
+            <LogOut className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
       </div>
     </header>
   );

@@ -8,6 +8,7 @@ const STORAGE_PREFIXES = [
   'threshold:',
   'flag:',
   'prefs:',
+  'policy-exception:',
 ];
 
 /**

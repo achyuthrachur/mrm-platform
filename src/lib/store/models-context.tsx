@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getModels, saveModel } from '@/lib/repo';
+import { getModelsWithFxCounts, saveModel } from '@/lib/repo';
 import type { Model } from '@/types';
 
 interface ModelsContextValue {
@@ -26,7 +26,8 @@ export function ModelsProvider({ children }: { children: React.ReactNode }) {
 
   async function load() {
     setLoading(true);
-    const data = await getModels();
+    // Compute openFx dynamically from active findings — never use the stored integer
+    const data = await getModelsWithFxCounts();
     setModels(data);
     setLoading(false);
   }
@@ -41,13 +42,9 @@ export function ModelsProvider({ children }: { children: React.ReactNode }) {
 
   async function updateModel(model: Model): Promise<void> {
     await saveModel(model);
-    setModels((prev) => {
-      const idx = prev.findIndex((m) => m.id === model.id);
-      if (idx === -1) return [...prev, model];
-      const next = [...prev];
-      next[idx] = model;
-      return next;
-    });
+    // After any model update, recompute openFx counts
+    const refreshed = await getModelsWithFxCounts();
+    setModels(refreshed);
   }
 
   return (

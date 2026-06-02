@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { SurfaceCard } from '@/components/ui/SurfaceCard';
 import { Button } from '@/components/ui/Button';
 import { POLICY_EXCEPTIONS, type PolicyException } from '@/lib/data/governance';
+import { getStorageAdapter } from '@/lib/storage/factory';
 
 const STATUS_COLOR: Record<PolicyException['status'], string> = {
   Active: 'var(--status-pass)',
@@ -14,24 +15,43 @@ const STATUS_COLOR: Record<PolicyException['status'], string> = {
 };
 
 export function PolicyExceptions() {
-  const [exceptions, setExceptions] = useState(POLICY_EXCEPTIONS);
+  const [exceptions, setExceptions] = useState<PolicyException[]>([]);
 
-  function handleRenew(id: string) {
-    setExceptions((prev) =>
-      prev.map((e) =>
-        e.id === id
-          ? {
-              ...e,
-              status: 'Active' as const,
-              expiryDate: new Date(
-                new Date(e.expiryDate).setFullYear(new Date(e.expiryDate).getFullYear() + 1)
-              )
-                .toISOString()
-                .slice(0, 10),
-            }
-          : e
+  useEffect(() => {
+    async function load() {
+      const adapter = getStorageAdapter();
+      const keys = await adapter.list('policy-exception:');
+      if (keys.length === 0) {
+        // First load — seed defaults into storage
+        for (const e of POLICY_EXCEPTIONS) {
+          await adapter.set(`policy-exception:${e.id}`, e);
+        }
+        setExceptions(POLICY_EXCEPTIONS);
+      } else {
+        const items = await Promise.all(keys.map((k) => adapter.get<PolicyException>(k)));
+        setExceptions(items.filter((i): i is PolicyException => i !== null));
+      }
+    }
+    load();
+  }, []);
+
+  async function handleRenew(id: string) {
+    const adapter = getStorageAdapter();
+    const renewed = exceptions.find((e) => e.id === id);
+    if (!renewed) return;
+
+    const updated: PolicyException = {
+      ...renewed,
+      status: 'Active',
+      expiryDate: new Date(
+        new Date(renewed.expiryDate).setFullYear(new Date(renewed.expiryDate).getFullYear() + 1)
       )
-    );
+        .toISOString()
+        .slice(0, 10),
+    };
+
+    await adapter.set(`policy-exception:${id}`, updated);
+    setExceptions((prev) => prev.map((e) => (e.id === id ? updated : e)));
     toast.success('Policy exception renewed for 12 months');
   }
 
@@ -74,7 +94,7 @@ export function PolicyExceptions() {
           </div>
         ))}
         {exceptions.length === 0 && (
-          <p className="text-small text-ink-muted">No active policy exceptions.</p>
+          <p className="text-small text-ink-muted">Loading exceptions…</p>
         )}
       </div>
     </SurfaceCard>

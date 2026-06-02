@@ -65,7 +65,7 @@ function addVerdictSection(doc: jsPDF, result: TestResult, y: number): number {
   return y + 28;
 }
 
-export function buildPDF(result: TestResult, modelName: string): jsPDF {
+export function buildPDF(result: TestResult, modelName: string, chartImageDataUrl?: string): jsPDF {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.width;
   let y = 0;
@@ -88,6 +88,18 @@ export function buildPDF(result: TestResult, modelName: string): jsPDF {
 
   // Verdict section
   y = addVerdictSection(doc, result, y);
+
+  // Chart image (captured via html2canvas in ExportButton)
+  if (chartImageDataUrl) {
+    try {
+      const imgW = pageW - 20;
+      const imgH = Math.round(imgW * 0.52); // ~16:10 aspect ratio for chart panels
+      doc.addImage(chartImageDataUrl, 'PNG', 10, y, imgW, imgH);
+      y += imgH + 6;
+    } catch {
+      // If image insertion fails, skip silently and continue with text content
+    }
+  }
 
   // Metrics table
   doc.setFontSize(10);

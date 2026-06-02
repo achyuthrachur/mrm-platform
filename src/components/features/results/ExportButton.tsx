@@ -25,7 +25,29 @@ export function ExportButton({ result, modelName }: ExportButtonProps) {
     setExporting(format);
     setOpen(false);
     try {
-      await exportResult(result, modelName, format);
+      let chartImageDataUrl: string | undefined;
+
+      // For PDF: capture the chart DOM element with html2canvas before building the PDF
+      if (format === 'pdf' && result.chartType) {
+        const chartEl = document.getElementById(`result-chart-${result.chartType}`);
+        if (chartEl) {
+          try {
+            // Dynamic import keeps html2canvas (~400kB) out of the main bundle
+            const { default: html2canvas } = await import('html2canvas');
+            const canvas = await html2canvas(chartEl, {
+              backgroundColor: '#011E41',
+              scale: 1.5,
+              useCORS: true,
+              logging: false,
+            });
+            chartImageDataUrl = canvas.toDataURL('image/png');
+          } catch {
+            // Chart capture failed — continue without it; PDF will still export
+          }
+        }
+      }
+
+      await exportResult(result, modelName, format, chartImageDataUrl);
       toast.success(`Exported as ${format.toUpperCase()}`);
     } catch (err) {
       toast.error('Export failed — see console');
@@ -54,7 +76,7 @@ export function ExportButton({ result, modelName }: ExportButtonProps) {
         {exporting ? `Exporting ${exporting.toUpperCase()}…` : 'Export'}
       </button>
 
-      {open && (
+      {open ? (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden="true" />
           <div
@@ -80,7 +102,7 @@ export function ExportButton({ result, modelName }: ExportButtonProps) {
             ))}
           </div>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

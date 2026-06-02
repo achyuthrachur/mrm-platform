@@ -292,32 +292,45 @@ export function ResultChart({ chartType, chartData }: ResultChartProps) {
   if (!chartData) return null;
   const d = chartData as Record<string, unknown>;
 
+  // Each chart is wrapped in a div with a stable ID so html2canvas can target it for PDF export.
+  const chartId = `result-chart-${chartType}`;
+
+  let inner: React.ReactNode = null;
   switch (chartType) {
     case 'quarterly':
-      return <QuarterlyChart data={d as Parameters<typeof QuarterlyChart>[0]['data']} />;
+      inner = <QuarterlyChart data={d as Parameters<typeof QuarterlyChart>[0]['data']} />;
+      break;
     case 'backtest-pd':
-      return null; // large scatter datasets omitted for now; metrics table carries the story
+      return null; // large scatter datasets omitted; metrics table carries the story
     case 'tornado':
-      return <TornadoChart data={d as Parameters<typeof TornadoChart>[0]['data']} />;
+      inner = <TornadoChart data={d as Parameters<typeof TornadoChart>[0]['data']} />;
+      break;
     case 'scenario':
-      return <ScenarioChart data={d as Parameters<typeof ScenarioChart>[0]['data']} />;
+      inner = <ScenarioChart data={d as Parameters<typeof ScenarioChart>[0]['data']} />;
+      break;
     case 'psi-bar':
-      return (
+      inner = (
         <PSIBarChart
           data={d as Parameters<typeof PSIBarChart>[0]['data']}
           title="PSI Distribution"
         />
       );
+      break;
     case 'csi-bar':
-      return (
+      inner = (
         <PSIBarChart
           data={d as Parameters<typeof PSIBarChart>[0]['data']}
           title="CSI Distribution"
         />
       );
+      break;
     case 'benchmark':
-      return <BenchmarkChart data={d as Parameters<typeof BenchmarkChart>[0]['data']} />;
+      inner = <BenchmarkChart data={d as Parameters<typeof BenchmarkChart>[0]['data']} />;
+      break;
     default:
       return null;
   }
+
+  if (!inner) return null;
+  return <div id={chartId}>{inner}</div>;
 }
