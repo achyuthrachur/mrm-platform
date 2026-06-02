@@ -63,7 +63,7 @@ export default function FindingDetailPage({ params }: FindingDetailPageProps) {
       <div className="space-y-4">
         <Link
           href="/findings"
-          className="inline-flex items-center gap-1.5 text-small text-ink-muted hover:text-ink"
+          className="text-small inline-flex items-center gap-1.5 text-ink-muted hover:text-ink"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Findings Tracker
@@ -109,7 +109,7 @@ export default function FindingDetailPage({ params }: FindingDetailPageProps) {
     <div className="max-w-4xl space-y-6">
       <Link
         href="/findings"
-        className="inline-flex items-center gap-1.5 rounded text-small text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+        className="text-small inline-flex items-center gap-1.5 rounded text-ink-muted transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         Findings Tracker
@@ -144,7 +144,7 @@ export default function FindingDetailPage({ params }: FindingDetailPageProps) {
             )}
           </div>
           <h1 className="text-h1 font-bold text-ink">{finding.title}</h1>
-          <p className="mt-1 font-mono text-small text-ink-muted">{finding.id}</p>
+          <p className="text-small mt-1 font-mono text-ink-muted">{finding.id}</p>
         </div>
         <FlagButton findingId={finding.id} isFlagged={!!finding.flaggedForReview} />
       </div>
@@ -176,7 +176,7 @@ export default function FindingDetailPage({ params }: FindingDetailPageProps) {
                   : []),
               ].map(({ label, value, link }) => (
                 <div key={label} className="flex gap-4">
-                  <dt className="w-32 shrink-0 text-small text-ink-muted">{label}</dt>
+                  <dt className="text-small w-32 shrink-0 text-ink-muted">{label}</dt>
                   <dd className="text-small font-medium text-ink">
                     {link ? (
                       <Link
@@ -232,7 +232,7 @@ export default function FindingDetailPage({ params }: FindingDetailPageProps) {
                       onChange={(e) => setClosingNote(e.target.value)}
                       placeholder="Describe how this was resolved..."
                       rows={2}
-                      className="placeholder-ink-muted w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                      className="placeholder-ink-muted text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                       style={{ borderColor: 'var(--border-hairline)' }}
                     />
                   </div>

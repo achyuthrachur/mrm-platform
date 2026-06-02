@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import type { Verdict } from '@/types';
 
 type StatusVariant = Verdict | 'info';
-
 interface StatusBadgeProps {
   status: StatusVariant;
   label?: string;
@@ -11,60 +10,46 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const STATUS_CONFIG: Record<
+const CFG: Record<
   StatusVariant,
-  { icon: React.ElementType; colorVar: string; bgVar: string; defaultLabel: string }
+  { icon: React.ElementType; color: string; bg: string; def: string }
 > = {
   pass: {
     icon: CheckCircle2,
-    colorVar: 'var(--status-pass)',
-    bgVar: 'var(--status-pass-bg)',
-    defaultLabel: 'Pass',
+    color: 'var(--status-pass)',
+    bg: 'var(--status-pass-bg)',
+    def: 'Pass',
   },
   warn: {
     icon: AlertTriangle,
-    colorVar: 'var(--status-warn)',
-    bgVar: 'var(--status-warn-bg)',
-    defaultLabel: 'Warn',
+    color: 'var(--status-warn)',
+    bg: 'var(--status-warn-bg)',
+    def: 'Warn',
   },
-  fail: {
-    icon: XCircle,
-    colorVar: 'var(--status-fail)',
-    bgVar: 'var(--status-fail-bg)',
-    defaultLabel: 'Fail',
-  },
-  info: {
-    icon: Info,
-    colorVar: 'var(--status-info)',
-    bgVar: 'var(--status-info-bg)',
-    defaultLabel: 'Info',
-  },
+  fail: { icon: XCircle, color: 'var(--status-fail)', bg: 'var(--status-fail-bg)', def: 'Fail' },
+  info: { icon: Info, color: 'var(--status-info)', bg: 'var(--status-info-bg)', def: 'Info' },
 };
 
 export function StatusBadge({ status, label, size = 'md', className }: StatusBadgeProps) {
-  const config = STATUS_CONFIG[status];
-  const Icon = config.icon;
-  const displayLabel = label ?? config.defaultLabel;
-
+  const c = CFG[status];
+  const Icon = c.icon;
+  const lbl = label ?? c.def;
   return (
     <span
       className={cn(
         'inline-flex items-center gap-1 whitespace-nowrap rounded-chip font-medium',
-        size === 'sm' ? 'px-2 py-0.5 text-caption' : 'px-2.5 py-1 text-small',
+        size === 'sm' ? 'px-1.5 py-px text-eyebrow' : 'px-2.5 py-1 text-body-sm',
         className
       )}
-      style={{
-        color: config.colorVar,
-        backgroundColor: config.bgVar,
-      }}
+      style={{ color: c.color, backgroundColor: c.bg }}
       role="status"
-      aria-label={displayLabel}
+      aria-label={lbl}
     >
       <Icon
         className={cn('shrink-0', size === 'sm' ? 'h-3 w-3' : 'h-3.5 w-3.5')}
         aria-hidden="true"
       />
-      {displayLabel}
+      {lbl}
     </span>
   );
 }

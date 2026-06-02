@@ -1,8 +1,6 @@
-/**
- * Recharts theme for brand-compliant data-viz on indigo VizCard panels.
- * White labels, indigo background, limited brand-hue palette.
- * Import tokens from here — never hardcode colors in chart components.
- */
+/** Recharts theme — brand-compliant data-viz on indigo VizCard panels.
+ *  White labels, indigo background, limited brand-hue palette.
+ *  Import from here only — zero raw hex in chart components. */
 
 export const CHART_COLORS = {
   amber: '#F5A800',
@@ -16,11 +14,10 @@ export const CHART_COLORS = {
   coral: '#E5376B',
   coralBright: '#FF526F',
   white: '#FFFFFF',
-  whiteMuted: 'rgba(255,255,255,0.5)',
-  whiteFaint: 'rgba(255,255,255,0.15)',
+  whiteMuted: 'rgba(255,255,255,0.50)',
+  whiteFaint: 'rgba(255,255,255,0.10)' /* subtle gridlines */,
 } as const;
 
-/** Ordered palette for sequential multi-series use */
 export const CHART_PALETTE = [
   CHART_COLORS.amber,
   CHART_COLORS.teal,
@@ -43,7 +40,7 @@ export const CHART_GRID_STYLE = {
 
 export const CHART_TOOLTIP_STYLE = {
   backgroundColor: '#002E62',
-  border: '1px solid rgba(255,255,255,0.15)',
+  border: '1px solid rgba(255,255,255,0.12)',
   borderRadius: 8,
   color: '#fff',
   fontSize: 12,

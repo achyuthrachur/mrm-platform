@@ -133,7 +133,7 @@ export function ReviewQueue({ findings }: ReviewQueueProps) {
                   className="space-y-3 border-t px-4 pb-4 pt-3"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 >
-                  <p className="line-clamp-3 text-small text-ink-secondary">{finding.desc}</p>
+                  <p className="text-small line-clamp-3 text-ink-secondary">{finding.desc}</p>
 
                   <div>
                     <label
@@ -149,7 +149,7 @@ export function ReviewQueue({ findings }: ReviewQueueProps) {
                         setNotes((prev) => ({ ...prev, [finding.id]: e.target.value }))
                       }
                       placeholder="Add a note for the finding owner..."
-                      className="placeholder-ink-muted w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                      className="placeholder-ink-muted text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                       style={{ borderColor: 'var(--border-hairline)' }}
                       rows={2}
                     />

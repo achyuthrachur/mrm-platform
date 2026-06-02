@@ -131,20 +131,20 @@ export function CreateFindingSheet({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 px-6 py-5" noValidate>
           {/* Source link info */}
           <div
-            className="rounded p-3 text-small"
+            className="text-small rounded p-3"
             style={{ backgroundColor: 'var(--status-info-bg)', color: 'var(--status-info)' }}
           >
             Pre-filled from {result.testType} run · Verdict: {result.verdict.toUpperCase()}
           </div>
 
           <div>
-            <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="cf-title">
+            <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="cf-title">
               Title
             </label>
             <input
               id="cf-title"
               {...register('title')}
-              className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+              className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
               style={{ borderColor: 'var(--border-hairline)' }}
             />
             {errors.title && (
@@ -156,13 +156,13 @@ export function CreateFindingSheet({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="cf-sev">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="cf-sev">
                 Severity
               </label>
               <select
                 id="cf-sev"
                 {...register('sev')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               >
                 <option value="Critical">Critical</option>
@@ -172,13 +172,13 @@ export function CreateFindingSheet({
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="cf-type">
+              <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="cf-type">
                 Type
               </label>
               <select
                 id="cf-type"
                 {...register('type')}
-                className="w-full rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+                className="text-small w-full rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
                 style={{ borderColor: 'var(--border-hairline)' }}
               >
                 <option value="Data Quality">Data Quality</option>
@@ -192,14 +192,14 @@ export function CreateFindingSheet({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="cf-desc">
+            <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="cf-desc">
               Description
             </label>
             <textarea
               id="cf-desc"
               {...register('desc')}
               rows={4}
-              className="w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+              className="text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
               style={{ borderColor: 'var(--border-hairline)' }}
             />
             {errors.desc && (
@@ -211,7 +211,7 @@ export function CreateFindingSheet({
 
           <div>
             <label
-              className="mb-1.5 block text-small font-medium text-ink"
+              className="text-small mb-1.5 block font-medium text-ink"
               htmlFor="cf-remediation"
             >
               Remediation Plan
@@ -220,7 +220,7 @@ export function CreateFindingSheet({
               id="cf-remediation"
               {...register('remediation')}
               rows={3}
-              className="w-full resize-none rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+              className="text-small w-full resize-none rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
               style={{ borderColor: 'var(--border-hairline)' }}
             />
             {errors.remediation && (
@@ -231,7 +231,7 @@ export function CreateFindingSheet({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-small font-medium text-ink" htmlFor="cf-due">
+            <label className="text-small mb-1.5 block font-medium text-ink" htmlFor="cf-due">
               Days Until Due
             </label>
             <input
@@ -240,7 +240,7 @@ export function CreateFindingSheet({
               {...register('daysUntilDue', { valueAsNumber: true })}
               min={1}
               max={365}
-              className="w-32 rounded-md border bg-surface px-3 py-2 text-small text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
+              className="text-small w-32 rounded-md border bg-surface-sunken px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)]"
               style={{ borderColor: 'var(--border-hairline)' }}
             />
           </div>

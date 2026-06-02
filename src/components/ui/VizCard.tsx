@@ -7,14 +7,10 @@ interface VizCardProps {
   children: React.ReactNode;
   className?: string;
   noPadding?: boolean;
-  /** Optional id for html2canvas chart capture */
   id?: string;
 }
 
-/**
- * Indigo data-viz panel (Addendum §3.2).
- * Dark anchor within the light layout — charts live inside here.
- */
+/** Indigo data-viz panel — deliberate dark punctuation within the light layout. */
 export function VizCard({
   title,
   eyebrow,
@@ -27,17 +23,13 @@ export function VizCard({
   return (
     <div
       id={id}
-      className={cn('overflow-hidden rounded-card', className)}
-      style={{
-        backgroundColor: 'var(--surface-viz)',
-        boxShadow: 'var(--shadow-card)',
-      }}
+      className={cn('overflow-hidden rounded-viz bg-surface-viz shadow-elev-1', className)}
     >
       {title || eyebrow || actions ? (
         <div className="flex items-start justify-between px-6 pt-5">
           <div className="flex flex-col gap-0.5">
             {eyebrow ? (
-              <span className="text-caption font-semibold uppercase tracking-wider text-white/50">
+              <span className="text-eyebrow uppercase tracking-[0.06em] text-white/40">
                 {eyebrow}
               </span>
             ) : null}

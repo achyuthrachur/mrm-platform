@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import {
   useSupabaseAuth,
   SupabaseAuthProvider,
@@ -13,11 +14,49 @@ import { ModelsProvider } from '@/lib/store/models-context';
 import { FindingsProvider } from '@/lib/store/findings-context';
 import { FlagsProvider } from '@/lib/store/flags-context';
 import { FrequencyApprovalsProvider } from '@/lib/store/frequency-approvals-context';
+import { CommandPalette } from '@/components/ui/CommandPalette';
+import { useModels } from '@/lib/store/models-context';
+import { useFindings } from '@/lib/store/findings-context';
 import { Toaster } from 'sonner';
+
+function AppShellInner({ children }: { children: React.ReactNode }) {
+  const { models } = useModels();
+  const { findings } = useFindings();
+
+  /* Header search button dispatches ⌘K — CommandPalette listens for it */
+  const openPalette = useCallback(() => {
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })
+    );
+  }, []);
+
+  const modelItems = models.map((m) => ({ id: m.id, name: m.name, cat: m.cat }));
+  const findingItems = findings
+    .filter((f) => f.status !== 'Closed')
+    .map((f) => ({ id: f.id, title: f.title, status: f.status }));
+
+  return (
+    <div className="min-h-screen bg-canvas">
+      <AppHeader onOpenPalette={openPalette} />
+      <AppSidebar />
+      <div
+        className="flex min-h-screen flex-col"
+        style={{ paddingTop: 'var(--header-height)', paddingLeft: 'var(--sidebar-width)' }}
+      >
+        <main className="flex-1 p-6" id="main-content" tabIndex={-1}>
+          {children}
+        </main>
+        <AppFooter />
+      </div>
+      <CommandPalette models={modelItems} findings={findingItems} />
+      {/* Keyboard shortcut also handled inside CommandPalette */}
+      <Toaster position="bottom-right" richColors />
+    </div>
+  );
+}
 
 function AppShell({ children }: { children: React.ReactNode }) {
   const { sessionRole, currentUser } = useSupabaseAuth();
-
   return (
     <ThemeProvider>
       <RoleProvider initialRole={sessionRole} initialUser={currentUser}>
@@ -25,24 +64,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           <FindingsProvider>
             <FlagsProvider>
               <FrequencyApprovalsProvider>
-                <div className="min-h-screen" style={{ backgroundColor: 'var(--canvas)' }}>
-                  <AppHeader />
-                  <AppSidebar />
-
-                  <div
-                    className="flex min-h-screen flex-col"
-                    style={{
-                      paddingTop: 'var(--header-height)',
-                      paddingLeft: 'var(--sidebar-width)',
-                    }}
-                  >
-                    <main className="flex-1 p-6" id="main-content" tabIndex={-1}>
-                      {children}
-                    </main>
-                    <AppFooter />
-                  </div>
-                </div>
-                <Toaster position="bottom-right" richColors />
+                <AppShellInner>{children}</AppShellInner>
               </FrequencyApprovalsProvider>
             </FlagsProvider>
           </FindingsProvider>
