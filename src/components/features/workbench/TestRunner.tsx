@@ -4,7 +4,6 @@ import { useState, useRef } from 'react';
 import { Play, Upload, Lock, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
-import { SurfaceCard } from '@/components/ui/SurfaceCard';
 import { TestResultView } from '@/components/features/results/TestResultView';
 import { RunHistory } from '@/components/features/results/RunHistory';
 import { ExportButton } from '@/components/features/results/ExportButton';
@@ -20,9 +19,11 @@ import type { Model, TestType, TestResult, TestRun } from '@/types';
 interface TestRunnerProps {
   model: Model;
   testType: TestType;
+  /** Shown before the first run — methodology description panel from the parent. */
+  methodologyPanel?: React.ReactNode;
 }
 
-export function TestRunner({ model, testType }: TestRunnerProps) {
+export function TestRunner({ model, testType, methodologyPanel }: TestRunnerProps) {
   const { canRunTests } = usePermissions();
   const { currentUser } = useRole();
   const { runTest, isRunning } = useRunStore();
@@ -82,7 +83,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         {canUploadCSV && (
           <button
             onClick={() => setUseUpload((v) => !v)}
-            className={`rounded-md border px-3 py-1.5 text-small transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] ${
+            className={`text-small rounded-md border px-3 py-1.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--ink)] ${
               useUpload
                 ? 'border-[var(--ink)] bg-[var(--ink)] text-white'
                 : 'border-[var(--border-hairline)] bg-surface text-ink hover:border-[var(--ink)]'
@@ -118,7 +119,7 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
         <div className="ml-auto flex items-center gap-2">
           {!canRunTests && (
             <span
-              className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-small text-ink-muted"
+              className="text-small flex items-center gap-1.5 rounded-md px-3 py-1.5 text-ink-muted"
               style={{ backgroundColor: 'var(--canvas)' }}
               aria-label="Run tests requires Model Owner role"
             >
@@ -172,15 +173,20 @@ export function TestRunner({ model, testType }: TestRunnerProps) {
           {result ? (
             <TestResultView result={result} />
           ) : (
-            <SurfaceCard>
-              <div className="flex flex-col items-center py-8 text-center">
-                <p className="text-small text-ink-muted">
-                  {canRunTests
-                    ? 'Click Run to execute the test.'
-                    : 'Switch to Owner role to run tests.'}
-                </p>
-              </div>
-            </SurfaceCard>
+            <div>
+              {/* Show methodology before first run; replaced by results after */}
+              {methodologyPanel ? (
+                methodologyPanel
+              ) : (
+                <div className="flex flex-col items-center py-8 text-center">
+                  <p className="text-body-sm text-ink-muted">
+                    {canRunTests
+                      ? 'Click Run to execute the test.'
+                      : 'Switch to Owner role to run tests.'}
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
 
