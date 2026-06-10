@@ -239,4 +239,75 @@ export interface Permissions {
   canManageModels: boolean;
   canViewAllModels: boolean;
   canExportResults: boolean;
+  canAddModel: boolean;
+  canApproveModel: boolean;
+}
+
+// ── Model Onboarding (PRD-12) ─────────────────────────────────────────────
+
+export type ModelOnboardingStatus =
+  | 'draft'
+  | 'awaiting_review'
+  | 'changes_requested'
+  | 'approved'
+  | 'rejected'
+  | 'ready'
+  | 'data_gen_failed';
+
+export type OnboardingAction =
+  | 'submit'
+  | 'request_changes'
+  | 'approve'
+  | 'reject'
+  | 'resubmit'
+  | 'data_gen_complete'
+  | 'data_gen_failed_action'
+  | 'retry';
+
+export interface ThresholdField {
+  key: string;
+  label: string;
+  unit: '%' | 'decimal' | 'count' | 'ratio' | 'bps';
+  default: number;
+  min: number;
+  max: number;
+  description: string;
+  reference: string;
+  warnBand?: { gt?: number; lt?: number };
+  failBand?: { gt?: number; lt?: number };
+  /** Hide this field unless model category is in this list */
+  showForCategories?: string[];
+  /** Hide this field when model category is in this list */
+  hideForCategories?: string[];
+}
+
+export interface TestThresholdSchema {
+  testType: TestType;
+  label: string;
+  fields: ThresholdField[];
+}
+
+export interface ThresholdConfig {
+  testKey: string;
+  testType: TestType;
+  fields: Record<string, number>;
+  overridesDefault: boolean;
+  mrmAcknowledged?: boolean;
+}
+
+export interface ModelSubmission {
+  id: string;
+  modelId: string;
+  status: ModelOnboardingStatus;
+  model: Partial<Model>;
+  selectedTests: SelectedTest[];
+  thresholdConfigs: ThresholdConfig[];
+  mrmNotes: string;
+  priorNotes: string[];
+  auditTrail: AuditEntry[];
+  submittedAt?: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  dataGenStatus?: 'pending' | 'generating' | 'complete' | 'failed';
+  dataGenProgress?: number;
 }

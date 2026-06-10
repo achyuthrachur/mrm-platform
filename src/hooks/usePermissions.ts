@@ -11,6 +11,8 @@ const MRM_PERMISSIONS: Permissions = {
   canManageModels: true,
   canViewAllModels: true,
   canExportResults: true,
+  canAddModel: false,
+  canApproveModel: true,
 };
 
 const OWNER_PERMISSIONS: Permissions = {
@@ -21,6 +23,8 @@ const OWNER_PERMISSIONS: Permissions = {
   canManageModels: false,
   canViewAllModels: false,
   canExportResults: true,
+  canAddModel: true,
+  canApproveModel: false,
 };
 
 export function usePermissions(): Permissions {

@@ -14,6 +14,7 @@ import { ModelsProvider } from '@/lib/store/models-context';
 import { FindingsProvider } from '@/lib/store/findings-context';
 import { FlagsProvider } from '@/lib/store/flags-context';
 import { FrequencyApprovalsProvider } from '@/lib/store/frequency-approvals-context';
+import { SubmissionsProvider } from '@/lib/store/submissions-context';
 import { CommandPalette } from '@/components/ui/CommandPalette';
 import { useModels } from '@/lib/store/models-context';
 import { useFindings } from '@/lib/store/findings-context';
@@ -64,7 +65,9 @@ function AppShell({ children }: { children: React.ReactNode }) {
           <FindingsProvider>
             <FlagsProvider>
               <FrequencyApprovalsProvider>
-                <AppShellInner>{children}</AppShellInner>
+                <SubmissionsProvider>
+                  <AppShellInner>{children}</AppShellInner>
+                </SubmissionsProvider>
               </FrequencyApprovalsProvider>
             </FlagsProvider>
           </FindingsProvider>

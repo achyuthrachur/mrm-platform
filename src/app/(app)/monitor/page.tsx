@@ -16,7 +16,7 @@ import type { Model, MonitoringCalendarEntry } from '@/types';
 
 export default function MonitorPage() {
   const { models, loading: modelsLoading } = useModels();
-  const { canViewAllModels } = usePermissions();
+  const { canViewAllModels, canAddModel } = usePermissions();
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [calendarEntries, setCalendarEntries] = useState<MonitoringCalendarEntry[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
@@ -39,10 +39,12 @@ export default function MonitorPage() {
           <Eyebrow>Monitoring</Eyebrow>
           <h1 className="mt-1 text-h1 font-bold text-ink">Performance Monitor</h1>
         </div>
-        <Button variant="primary" size="sm" onClick={() => setShowAddModel(true)}>
-          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-          Add Model
-        </Button>
+        {canAddModel && (
+          <Button variant="primary" size="sm" onClick={() => setShowAddModel(true)}>
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            Add Model
+          </Button>
+        )}
       </div>
 
       <SurfaceCard title="Macro Environment" eyebrow="Economic Indicators">
@@ -53,9 +55,9 @@ export default function MonitorPage() {
         <SurfaceCard title="Models" noPadding>
           <ul className="divide-y" style={{ borderColor: 'var(--border-hairline)' }}>
             {modelsLoading ? (
-              <li className="px-4 py-3 text-small text-ink-muted">Loading…</li>
+              <li className="text-small px-4 py-3 text-ink-muted">Loading…</li>
             ) : scopedModels.length === 0 ? (
-              <li className="px-4 py-3 text-small text-ink-muted">No models in scope.</li>
+              <li className="text-small px-4 py-3 text-ink-muted">No models in scope.</li>
             ) : (
               scopedModels.map((model) => {
                 const isSelected = selectedModel?.id === model.id;
@@ -75,7 +77,7 @@ export default function MonitorPage() {
                     >
                       <TierBadge tier={model.tier} />
                       <div className="min-w-0">
-                        <p className="truncate text-small font-medium text-ink">{model.name}</p>
+                        <p className="text-small truncate font-medium text-ink">{model.name}</p>
                         <p className="text-caption text-ink-muted">{model.id}</p>
                       </div>
                     </button>

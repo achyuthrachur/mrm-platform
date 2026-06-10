@@ -4,7 +4,15 @@ import { getMonitoringCalendar } from '@/lib/data/monitoring-calendar';
 import { TEST_HISTORY } from '@/lib/data/test-history';
 import { getStorageAdapter } from '@/lib/storage/factory';
 import { getDatasetById } from '@/lib/data/datasets';
-import type { Model, Finding, MonitoringCalendarEntry, TestRun, Dataset } from '@/types';
+import type {
+  Model,
+  Finding,
+  MonitoringCalendarEntry,
+  TestRun,
+  Dataset,
+  ModelSubmission,
+  ModelOnboardingStatus,
+} from '@/types';
 
 /**
  * Data-access layer — async, no React.
@@ -130,8 +138,61 @@ export async function getCalendar(modelId: string): Promise<MonitoringCalendarEn
   });
 }
 
-export function getDataset(id: string): Dataset<unknown> | null {
-  return getDatasetById(id);
+/** Get a seed dataset by ID, or a generated dataset from storage. */
+export async function getDataset(
+  modelIdOrDatasetId: string,
+  testType?: string
+): Promise<Dataset<unknown> | null> {
+  // First check if it's a seed dataset
+  if (!testType) {
+    return getDatasetById(modelIdOrDatasetId);
+  }
+  // Look up generated dataset in storage
+  const adapter = getStorageAdapter();
+  const stored = await adapter.get<Dataset<unknown>>(`dataset:${modelIdOrDatasetId}:${testType}`);
+  if (stored) return stored;
+  // Fall back to seed dataset lookup (legacy)
+  return getDatasetById(modelIdOrDatasetId);
+}
+
+export async function saveDataset(
+  modelId: string,
+  testType: string,
+  dataset: Dataset<unknown>
+): Promise<void> {
+  const adapter = getStorageAdapter();
+  await adapter.set(`dataset:${modelId}:${testType}`, dataset);
+}
+
+// ── Model Submission repo ─────────────────────────────────────────────────
+
+export async function getSubmission(id: string): Promise<ModelSubmission | null> {
+  const adapter = getStorageAdapter();
+  return adapter.get<ModelSubmission>(`submission:${id}`);
+}
+
+export async function saveSubmission(submission: ModelSubmission): Promise<void> {
+  const adapter = getStorageAdapter();
+  await adapter.set(`submission:${submission.id}`, submission);
+}
+
+export async function listSubmissions(
+  status?: ModelOnboardingStatus | ModelOnboardingStatus[]
+): Promise<ModelSubmission[]> {
+  const adapter = getStorageAdapter();
+  const keys = await adapter.list('submission:');
+  const all = await Promise.all(keys.map((k) => adapter.get<ModelSubmission>(k)));
+  const submissions = all.filter((s): s is ModelSubmission => s !== null);
+
+  if (!status) return submissions;
+
+  const statuses = Array.isArray(status) ? status : [status];
+  return submissions.filter((s) => statuses.includes(s.status));
+}
+
+export async function deleteSubmission(id: string): Promise<void> {
+  const adapter = getStorageAdapter();
+  await adapter.delete(`submission:${id}`);
 }
 
 /**
